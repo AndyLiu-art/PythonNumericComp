@@ -1,0 +1,48 @@
+    \hypertarget{ux4e00ux5143ux51fdux6570ux6c42ux6839}{%
+\subsubsection{一元函数求根}\label{ux4e00ux5143ux51fdux6570ux6c42ux6839}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{scipy} \PY{k+kn}{import} \PY{n}{optimize}
+\PY{c+c1}{\PYZsh{} 定义目标函数}
+\PY{k}{def} \PY{n+nf}{f}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{p}{(}\PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{3} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{)}  \PY{c+c1}{\PYZsh{} only one real root at x = 1}
+\PY{c+c1}{\PYZsh{} 导数}
+\PY{k}{def} \PY{n+nf}{fprime}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{l+m+mi}{3}\PY{o}{*}\PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sol} \PY{o}{=} \PY{n}{optimize}\PY{o}{.}\PY{n}{root\PYZus{}scalar}\PY{p}{(}
+    \PY{n}{f}\PY{p}{,} \PY{c+c1}{\PYZsh{} 目标函数}
+    \PY{n}{bracket}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{]}\PY{p}{,} \PY{c+c1}{\PYZsh{} 寻根区间}
+    \PY{n}{method}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{brentq}\PY{l+s+s2}{\PYZdq{}}
+\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{sol}\PY{o}{.}\PY{n}{root}\PY{p}{,} \PY{n}{sol}\PY{o}{.}\PY{n}{iterations}\PY{p}{,} \PY{n}{sol}\PY{o}{.}\PY{n}{function\PYZus{}calls}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+1.0 10 11
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sol} \PY{o}{=} \PY{n}{optimize}\PY{o}{.}\PY{n}{root\PYZus{}scalar}\PY{p}{(}
+    \PY{n}{f}\PY{p}{,} 
+    \PY{n}{x0}\PY{o}{=}\PY{l+m+mf}{0.2}\PY{p}{,} \PY{c+c1}{\PYZsh{} 初始值}
+    \PY{n}{fprime}\PY{o}{=}\PY{n}{fprime}\PY{p}{,} \PY{c+c1}{\PYZsh{} 导数}
+    \PY{n}{method}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{newton}\PY{l+s+s2}{\PYZdq{}}
+\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{sol}\PY{o}{.}\PY{n}{root}\PY{p}{,} \PY{n}{sol}\PY{o}{.}\PY{n}{iterations}\PY{p}{,} \PY{n}{sol}\PY{o}{.}\PY{n}{function\PYZus{}calls}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+1.0 11 22
+    \end{Verbatim}

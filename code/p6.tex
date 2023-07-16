@@ -1,0 +1,271 @@
+    \hypertarget{ux591aux5143ux51fdux6570ux6709ux7ea6ux675fux7684ux6700ux4f18ux5316ux95eeux9898}{%
+\subsubsection{多元函数有约束的最优化问题}\label{ux591aux5143ux51fdux6570ux6709ux7ea6ux675fux7684ux6700ux4f18ux5316ux95eeux9898}}
+
+    求解约束问题如下
+
+    \[
+    \begin{aligned}
+\min\limits_{x_0,x_1}\; 100(x_1-x^2_0)^2+(1-x_0)^2\\
+\text{subject to:}\\
+x_0+2x_1\le 1\\
+x^2_0+x_1\le 1\\
+x^2_0-x_1\le 1\\
+2x_0+x_1=1\\
+0\le x_0\le 1\\
+-0.5\le x_1\le 2
+\end{aligned}
+\]
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{optimize} \PY{k+kn}{import} \PY{n}{Bounds}
+\PY{c+c1}{\PYZsh{} 定义变量的边界}
+\PY{n}{bounds} \PY{o}{=} \PY{n}{Bounds}\PY{p}{(}
+    \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{0.5}\PY{p}{]}\PY{p}{,} \PY{c+c1}{\PYZsh{} 下界}
+    \PY{p}{[}\PY{l+m+mf}{1.0}\PY{p}{,} \PY{l+m+mf}{2.0}\PY{p}{]} \PY{c+c1}{\PYZsh{} 上界}
+\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{optimize} \PY{k+kn}{import} \PY{n}{LinearConstraint}
+\PY{c+c1}{\PYZsh{} 定义线性约束}
+\PY{n}{linear\PYZus{}constraint} \PY{o}{=} \PY{n}{LinearConstraint}\PY{p}{(}
+    \PY{p}{[}
+        \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} 
+        \PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}
+    \PY{p}{]}\PY{p}{,} 
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{n}{np}\PY{o}{.}\PY{n}{inf}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{c+c1}{\PYZsh{} 下界}
+    \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]} \PY{c+c1}{\PYZsh{} 上界}
+\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 非线性约束 }
+\PY{k}{def} \PY{n+nf}{cons\PYZus{}f}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{p}{[}
+        \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} 
+        \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{\PYZhy{}} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+    \PY{p}{]}
+\PY{c+c1}{\PYZsh{} 非线性约束的雅可比形式}
+\PY{k}{def} \PY{n+nf}{cons\PYZus{}J}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{p}{[}
+        \PY{p}{[}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} 
+        \PY{p}{[}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}
+    \PY{p}{]}
+\PY{c+c1}{\PYZsh{} 黑塞矩阵的线性组合}
+\PY{k}{def} \PY{n+nf}{cons\PYZus{}H}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{v}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{v}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}
+        \PY{p}{[}
+            \PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} 
+            \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}
+        \PY{p}{]}
+    \PY{p}{)} \PY{o}{+} \PY{n}{v}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}
+        \PY{p}{[}
+            \PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} 
+            \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}
+        \PY{p}{]}
+    \PY{p}{)}
+\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{optimize} \PY{k+kn}{import} \PY{n}{NonlinearConstraint}
+\PY{c+c1}{\PYZsh{} 构造非线性约束}
+\PY{n}{nonlinear\PYZus{}constraint} \PY{o}{=} \PY{n}{NonlinearConstraint}\PY{p}{(}
+    \PY{n}{cons\PYZus{}f}\PY{p}{,} 
+    \PY{o}{\PYZhy{}}\PY{n}{np}\PY{o}{.}\PY{n}{inf}\PY{p}{,} \PY{c+c1}{\PYZsh{} 下界}
+    \PY{l+m+mi}{1}\PY{p}{,} \PY{c+c1}{\PYZsh{} 上界}
+    \PY{n}{jac}\PY{o}{=}\PY{n}{cons\PYZus{}J}\PY{p}{,} 
+    \PY{n}{hess}\PY{o}{=}\PY{n}{cons\PYZus{}H}
+\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{optimize} \PY{k+kn}{import} \PY{n}{minimize}
+\PY{c+c1}{\PYZsh{} 初始值}
+\PY{n}{x0} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{0.5}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} 最优化目标函数}
+\PY{k}{def} \PY{n+nf}{rosen}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+\PY{+w}{    }\PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}The Rosenbrock function\PYZdq{}\PYZdq{}\PYZdq{}}
+    \PY{k}{return} \PY{n+nb}{sum}\PY{p}{(}\PY{l+m+mf}{100.0}\PY{o}{*}\PY{p}{(}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{[}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{*}\PY{o}{*}\PY{l+m+mf}{2.0}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mf}{2.0} \PY{o}{+} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{[}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mf}{2.0}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} 目标函数的导数}
+\PY{k}{def} \PY{n+nf}{rosen\PYZus{}der}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{n}{xm} \PY{o}{=} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}
+    \PY{n}{xm\PYZus{}m1} \PY{o}{=} \PY{n}{x}\PY{p}{[}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{]}
+    \PY{n}{xm\PYZus{}p1} \PY{o}{=} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{:}\PY{p}{]}
+    \PY{n}{der} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros\PYZus{}like}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+    \PY{n}{der}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{200}\PY{o}{*}\PY{p}{(}\PY{n}{xm}\PY{o}{\PYZhy{}}\PY{n}{xm\PYZus{}m1}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{l+m+mi}{400}\PY{o}{*}\PY{p}{(}\PY{n}{xm\PYZus{}p1} \PY{o}{\PYZhy{}} \PY{n}{xm}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{*}\PY{n}{xm} \PY{o}{\PYZhy{}} \PY{l+m+mi}{2}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{xm}\PY{p}{)}
+    \PY{n}{der}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{400}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{*}\PY{p}{(}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{l+m+mi}{2}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+    \PY{n}{der}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{200}\PY{o}{*}\PY{p}{(}\PY{n}{x}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{]}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}
+    \PY{k}{return} \PY{n}{der}
+\PY{c+c1}{\PYZsh{} 目标函数的黑塞矩阵}
+\PY{k}{def} \PY{n+nf}{rosen\PYZus{}hess}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{asarray}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+    \PY{n}{H} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{diag}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{400}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{np}\PY{o}{.}\PY{n}{diag}\PY{p}{(}\PY{l+m+mi}{400}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}
+    \PY{n}{diagonal} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros\PYZus{}like}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+    \PY{n}{diagonal}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{1200}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{\PYZhy{}}\PY{l+m+mi}{400}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{+}\PY{l+m+mi}{2}
+    \PY{n}{diagonal}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{200}
+    \PY{n}{diagonal}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{202} \PY{o}{+} \PY{l+m+mi}{1200}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{\PYZhy{}} \PY{l+m+mi}{400}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{:}\PY{p}{]}
+    \PY{n}{H} \PY{o}{=} \PY{n}{H} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{diag}\PY{p}{(}\PY{n}{diagonal}\PY{p}{)}
+    \PY{k}{return} \PY{n}{H}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{res} \PY{o}{=} \PY{n}{minimize}\PY{p}{(}
+    \PY{n}{rosen}\PY{p}{,} \PY{c+c1}{\PYZsh{} 目标函数}
+    \PY{n}{x0}\PY{p}{,} \PY{c+c1}{\PYZsh{} 初始值}
+    \PY{n}{method}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{trust\PYZhy{}constr}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{c+c1}{\PYZsh{} 求解算法}
+    \PY{n}{jac}\PY{o}{=}\PY{n}{rosen\PYZus{}der}\PY{p}{,} \PY{c+c1}{\PYZsh{} 梯度}
+    \PY{n}{hess}\PY{o}{=}\PY{n}{rosen\PYZus{}hess}\PY{p}{,} \PY{c+c1}{\PYZsh{} 黑塞矩阵}
+    \PY{n}{constraints}\PY{o}{=}\PY{p}{[}\PY{n}{linear\PYZus{}constraint}\PY{p}{,} \PY{n}{nonlinear\PYZus{}constraint}\PY{p}{]}\PY{p}{,} \PY{c+c1}{\PYZsh{} 约束}
+    \PY{n}{options}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{verbose}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{1}\PY{p}{\PYZcb{}}\PY{p}{,} 
+    \PY{n}{bounds}\PY{o}{=}\PY{n}{bounds} \PY{c+c1}{\PYZsh{} 变量范围}
+\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{res}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+`gtol` termination condition is satisfied.
+Number of iterations: 12, function evaluations: 8, CG iterations: 7, optimality:
+2.99e-09, constraint violation: 0.00e+00, execution time: 0.047 s.
+           message: `gtol` termination condition is satisfied.
+           success: True
+            status: 1
+               fun: 0.3427175756422305
+                 x: [ 4.149e-01  1.701e-01]
+               nit: 12
+              nfev: 8
+              njev: 8
+              nhev: 8
+          cg\_niter: 7
+      cg\_stop\_cond: 1
+              grad: [-8.265e-01 -4.140e-01]
+   lagrangian\_grad: [ 1.495e-09 -2.990e-09]
+            constr: [array([ 7.552e-01,  1.000e+00]), array([ 3.423e-01,
+2.070e-03]), array([ 4.149e-01,  1.701e-01])]
+               jac: [array([[ 1.000e+00,  2.000e+00],
+                           [ 2.000e+00,  1.000e+00]]), array([[ 8.299e-01,
+1.000e+00],
+                           [ 8.299e-01, -1.000e+00]]), array([[ 1.000e+00,
+0.000e+00],
+                           [ 0.000e+00,  1.000e+00]])]
+       constr\_nfev: [0, 8, 0]
+       constr\_njev: [0, 8, 0]
+       constr\_nhev: [0, 13, 0]
+                 v: [array([ 6.536e-04,  4.128e-01]), array([ 2.433e-04,
+1.603e-04]), array([-1.121e-04, -1.513e-04])]
+            method: tr\_interior\_point
+        optimality: 2.989621706689068e-09
+  constr\_violation: 0.0
+    execution\_time: 0.046998023986816406
+         tr\_radius: 3834.1597660672387
+    constr\_penalty: 1.0
+ barrier\_parameter: 0.00016000000000000007
+ barrier\_tolerance: 0.00016000000000000007
+             niter: 12
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 最优化的点}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{res}\PY{o}{.}\PY{n}{x}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[0.41494531 0.17010937]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 定义不等式约束}
+\PY{n}{ineq\PYZus{}cons} \PY{o}{=} \PY{p}{\PYZob{}}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{type}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ineq}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{c+c1}{\PYZsh{} 不等式约束}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{fun}\PY{l+s+s2}{\PYZdq{}} \PY{p}{:} \PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}
+        \PY{p}{[}
+            \PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{l+m+mi}{2}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}
+            \PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{\PYZhy{}} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}
+            \PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+        \PY{p}{]}
+    \PY{p}{)}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{jac}\PY{l+s+s2}{\PYZdq{}} \PY{p}{:} \PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}
+        \PY{p}{[}
+            \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1.0}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{2.0}\PY{p}{]}\PY{p}{,}
+            \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.0}\PY{p}{]}\PY{p}{,}
+            \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{l+m+mf}{1.0}\PY{p}{]}
+        \PY{p}{]}
+    \PY{p}{)}
+\PY{p}{\PYZcb{}}
+\PY{c+c1}{\PYZsh{} 定义等式约束}
+\PY{n}{eq\PYZus{}cons} \PY{o}{=} \PY{p}{\PYZob{}}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{type}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{eq}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{fun}\PY{l+s+s2}{\PYZdq{}} \PY{p}{:} \PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{+} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{jac}\PY{l+s+s2}{\PYZdq{}} \PY{p}{:} \PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{2.0}\PY{p}{,} \PY{l+m+mf}{1.0}\PY{p}{]}\PY{p}{)}
+\PY{p}{\PYZcb{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{x0} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{0.5}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+\PY{n}{res} \PY{o}{=} \PY{n}{minimize}\PY{p}{(}
+    \PY{n}{rosen}\PY{p}{,} 
+    \PY{n}{x0}\PY{p}{,} 
+    \PY{n}{method}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{SLSQP}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+    \PY{n}{jac}\PY{o}{=}\PY{n}{rosen\PYZus{}der}\PY{p}{,}
+    \PY{n}{constraints}\PY{o}{=}\PY{p}{[}\PY{n}{eq\PYZus{}cons}\PY{p}{,} \PY{n}{ineq\PYZus{}cons}\PY{p}{]}\PY{p}{,} 
+    \PY{n}{options}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ftol}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mf}{1e\PYZhy{}9}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{disp}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{k+kc}{True}\PY{p}{\PYZcb{}}\PY{p}{,}
+    \PY{n}{bounds}\PY{o}{=}\PY{n}{bounds}
+\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{res}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Optimization terminated successfully    (Exit mode 0)
+            Current function value: 0.34271757499419825
+            Iterations: 4
+            Function evaluations: 5
+            Gradient evaluations: 4
+ message: Optimization terminated successfully
+ success: True
+  status: 0
+     fun: 0.34271757499419825
+       x: [ 4.149e-01  1.701e-01]
+     nit: 4
+     jac: [-8.268e-01 -4.137e-01]
+    nfev: 5
+    njev: 4
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 最优化的点}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{res}\PY{o}{.}\PY{n}{x}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[0.41494475 0.1701105 ]
+    \end{Verbatim}

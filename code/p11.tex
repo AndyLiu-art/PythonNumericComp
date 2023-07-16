@@ -1,0 +1,134 @@
+    \hypertarget{ux7ebfux6027ux89c4ux5212}{%
+\subsubsection{线性规划}\label{ux7ebfux6027ux89c4ux5212}}
+
+    线性规划的数学表达如下
+
+\[
+\begin{aligned}
+\min\limits_{x}c^Tx\\
+\text{subject to:}\\
+A_{ub}x\le b_{ub}\\
+A_{eq}x\le b_{eq}\\
+l \le x\le u
+\end{aligned}
+\]
+
+    下面求解一个实际例子 \[
+\begin{aligned}
+\max\limits_{x_1,x_2,x_3,x_4}29x_1+45x_2\\
+x_1-x_2-3x_3\le 5\\
+2x_1-3x_2-7x_3+3x_4\ge 10\\
+2x_1+8x_2+x_3=60\\
+4x_1+4x_2+x_4=60\\
+0\le x_1\\
+0\le x_2\le 5\\
+x_3\le 0.5\\
+-3\le x_4
+\end{aligned}
+\]
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{optimize} \PY{k+kn}{import} \PY{n}{linprog}
+\PY{c+c1}{\PYZsh{} 价值系数，最大值需要将c的系数变号}
+\PY{n}{c} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{29.0}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{45.0}\PY{p}{,} \PY{l+m+mf}{0.0}\PY{p}{,} \PY{l+m+mf}{0.0}\PY{p}{]}\PY{p}{)}
+\PY{n}{A\PYZus{}ub} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}
+    \PY{p}{[}
+        \PY{p}{[}\PY{l+m+mf}{1.0}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{1.0}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{3.0}\PY{p}{,} \PY{l+m+mf}{0.0}\PY{p}{]}\PY{p}{,}
+        \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{2.0}\PY{p}{,} \PY{l+m+mf}{3.0}\PY{p}{,} \PY{l+m+mf}{7.0}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{3.0}\PY{p}{]}
+    \PY{p}{]}
+\PY{p}{)}
+\PY{n}{b\PYZus{}ub} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{5.0}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{10.0}\PY{p}{]}\PY{p}{)}
+\PY{n}{A\PYZus{}eq} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}
+    \PY{p}{[}
+        \PY{p}{[}\PY{l+m+mf}{2.0}\PY{p}{,} \PY{l+m+mf}{8.0}\PY{p}{,} \PY{l+m+mf}{1.0}\PY{p}{,} \PY{l+m+mf}{0.0}\PY{p}{]}\PY{p}{,}
+        \PY{p}{[}\PY{l+m+mf}{4.0}\PY{p}{,} \PY{l+m+mf}{4.0}\PY{p}{,} \PY{l+m+mf}{0.0}\PY{p}{,} \PY{l+m+mf}{1.0}\PY{p}{]}
+    \PY{p}{]}
+\PY{p}{)}
+\PY{n}{b\PYZus{}eq} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{60.0}\PY{p}{,} \PY{l+m+mf}{60.0}\PY{p}{]}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} 变量范围}
+\PY{n}{x0\PYZus{}bounds} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{k+kc}{None}\PY{p}{)}
+\PY{n}{x1\PYZus{}bounds} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mf}{5.0}\PY{p}{)}
+\PY{n}{x2\PYZus{}bounds} \PY{o}{=} \PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{np}\PY{o}{.}\PY{n}{inf}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{)}  \PY{c+c1}{\PYZsh{} +/\PYZhy{} np.inf can be used instead of None}
+\PY{n}{x3\PYZus{}bounds} \PY{o}{=} \PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mf}{3.0}\PY{p}{,} \PY{k+kc}{None}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} 构造变量界}
+\PY{n}{bounds} \PY{o}{=} \PY{p}{[}\PY{n}{x0\PYZus{}bounds}\PY{p}{,} \PY{n}{x1\PYZus{}bounds}\PY{p}{,} \PY{n}{x2\PYZus{}bounds}\PY{p}{,} \PY{n}{x3\PYZus{}bounds}\PY{p}{]}
+\PY{c+c1}{\PYZsh{} 线性规划}
+\PY{n}{result} \PY{o}{=} \PY{n}{linprog}\PY{p}{(}
+    \PY{n}{c}\PY{p}{,} 
+    \PY{n}{A\PYZus{}ub}\PY{o}{=}\PY{n}{A\PYZus{}ub}\PY{p}{,} 
+    \PY{n}{b\PYZus{}ub}\PY{o}{=}\PY{n}{b\PYZus{}ub}\PY{p}{,} 
+    \PY{n}{A\PYZus{}eq}\PY{o}{=}\PY{n}{A\PYZus{}eq}\PY{p}{,} 
+    \PY{n}{b\PYZus{}eq}\PY{o}{=}\PY{n}{b\PYZus{}eq}\PY{p}{,} 
+    \PY{n}{bounds}\PY{o}{=}\PY{n}{bounds}
+\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{result}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+       message: The problem is infeasible. (HiGHS Status 8: model\_status is
+Infeasible; primal\_status is At lower/fixed bound)
+       success: False
+        status: 2
+           fun: None
+             x: None
+           nit: 3
+         lower:  residual: None
+                marginals: None
+         upper:  residual: None
+                marginals: None
+         eqlin:  residual: None
+                marginals: None
+       ineqlin:  residual: None
+                marginals: None
+    \end{Verbatim}
+
+    这个线性规划无最优解，改变一下条件
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{x1\PYZus{}bounds} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}
+\PY{n}{bounds} \PY{o}{=} \PY{p}{[}\PY{n}{x0\PYZus{}bounds}\PY{p}{,} \PY{n}{x1\PYZus{}bounds}\PY{p}{,} \PY{n}{x2\PYZus{}bounds}\PY{p}{,} \PY{n}{x3\PYZus{}bounds}\PY{p}{]}
+\PY{n}{result} \PY{o}{=} \PY{n}{linprog}\PY{p}{(}\PY{n}{c}\PY{p}{,} \PY{n}{A\PYZus{}ub}\PY{o}{=}\PY{n}{A\PYZus{}ub}\PY{p}{,} \PY{n}{b\PYZus{}ub}\PY{o}{=}\PY{n}{b\PYZus{}ub}\PY{p}{,} \PY{n}{A\PYZus{}eq}\PY{o}{=}\PY{n}{A\PYZus{}eq}\PY{p}{,} \PY{n}{b\PYZus{}eq}\PY{o}{=}\PY{n}{b\PYZus{}eq}\PY{p}{,} \PY{n}{bounds}\PY{o}{=}\PY{n}{bounds}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{result}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+        message: Optimization terminated successfully. (HiGHS Status 7: Optimal)
+        success: True
+         status: 0
+            fun: -505.974358974359
+              x: [ 9.410e+00  5.179e+00 -2.564e-01  1.641e+00]
+            nit: 3
+          lower:  residual: [ 9.410e+00  5.179e+00        inf  4.641e+00]
+                 marginals: [ 0.000e+00  0.000e+00  0.000e+00  0.000e+00]
+          upper:  residual: [       inf  8.205e-01  7.564e-01        inf]
+                 marginals: [ 0.000e+00  0.000e+00  0.000e+00  0.000e+00]
+          eqlin:  residual: [ 0.000e+00  0.000e+00]
+                 marginals: [-2.887e+00 -5.415e+00]
+        ineqlin:  residual: [ 0.000e+00  0.000e+00]
+                 marginals: [-5.174e+00 -1.805e+00]
+ mip\_node\_count: 0
+ mip\_dual\_bound: 0.0
+        mip\_gap: 0.0
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 最优点}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{result}\PY{o}{.}\PY{n}{x}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} 最优值}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{result}\PY{o}{.}\PY{n}{fun}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[ 9.41025641  5.17948718 -0.25641026  1.64102564]
+-505.974358974359
+    \end{Verbatim}

@@ -1,0 +1,506 @@
+    \hypertarget{ux591aux5143ux51fdux6570ux65e0ux7ea6ux675fux7684ux6700ux4f18ux5316ux95eeux9898}{%
+\subsubsection{多元函数无约束的最优化问题}\label{ux591aux5143ux51fdux6570ux65e0ux7ea6ux675fux7684ux6700ux4f18ux5316ux95eeux9898}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 导入基础计算库}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{c+c1}{\PYZsh{} 导入最优化库}
+\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{optimize} \PY{k+kn}{import} \PY{n}{minimize}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{rosen}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+\PY{+w}{    }\PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}The Rosenbrock function\PYZdq{}\PYZdq{}\PYZdq{}}
+    \PY{k}{return} \PY{n+nb}{sum}\PY{p}{(}\PY{l+m+mf}{100.0}\PY{o}{*}\PY{p}{(}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{[}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{*}\PY{o}{*}\PY{l+m+mf}{2.0}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mf}{2.0} \PY{o}{+} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{[}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mf}{2.0}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 初始值}
+\PY{n}{x0} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{1.3}\PY{p}{,} \PY{l+m+mf}{0.7}\PY{p}{,} \PY{l+m+mf}{0.8}\PY{p}{,} \PY{l+m+mf}{1.9}\PY{p}{,} \PY{l+m+mf}{1.2}\PY{p}{]}\PY{p}{)}
+\PY{n}{res} \PY{o}{=} \PY{n}{minimize}\PY{p}{(}
+    \PY{n}{rosen}\PY{p}{,} \PY{n}{x0}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{nelder\PYZhy{}mead}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{options}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{xatol}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mf}{1e\PYZhy{}8}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{disp}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{k+kc}{True}\PY{p}{\PYZcb{}}
+\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{res}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Optimization terminated successfully.
+         Current function value: 0.000000
+         Iterations: 339
+         Function evaluations: 571
+       message: Optimization terminated successfully.
+       success: True
+        status: 0
+           fun: 4.861153433422115e-17
+             x: [ 1.000e+00  1.000e+00  1.000e+00  1.000e+00  1.000e+00]
+           nit: 339
+          nfev: 571
+ final\_simplex: (array([[ 1.000e+00,  1.000e+00, {\ldots},  1.000e+00,
+                         1.000e+00],
+                       [ 1.000e+00,  1.000e+00, {\ldots},  1.000e+00,
+                         1.000e+00],
+                       {\ldots},
+                       [ 1.000e+00,  1.000e+00, {\ldots},  1.000e+00,
+                         1.000e+00],
+                       [ 1.000e+00,  1.000e+00, {\ldots},  1.000e+00,
+                         1.000e+00]]), array([ 4.861e-17,  7.652e-17,
+8.114e-17,  8.633e-17,
+                        8.641e-17,  2.179e-16]))
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 最小值点}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{res}\PY{o}{.}\PY{n}{x}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[1. 1. 1. 1. 1.]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 目标函数的梯度}
+\PY{k}{def} \PY{n+nf}{rosen\PYZus{}der}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{n}{xm} \PY{o}{=} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}
+    \PY{n}{xm\PYZus{}m1} \PY{o}{=} \PY{n}{x}\PY{p}{[}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{]}
+    \PY{n}{xm\PYZus{}p1} \PY{o}{=} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{:}\PY{p}{]}
+    \PY{n}{der} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros\PYZus{}like}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+    \PY{n}{der}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{200}\PY{o}{*}\PY{p}{(}\PY{n}{xm}\PY{o}{\PYZhy{}}\PY{n}{xm\PYZus{}m1}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{l+m+mi}{400}\PY{o}{*}\PY{p}{(}\PY{n}{xm\PYZus{}p1} \PY{o}{\PYZhy{}} \PY{n}{xm}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{*}\PY{n}{xm} \PY{o}{\PYZhy{}} \PY{l+m+mi}{2}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{xm}\PY{p}{)}
+    \PY{n}{der}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{400}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{*}\PY{p}{(}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{l+m+mi}{2}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+    \PY{n}{der}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{200}\PY{o}{*}\PY{p}{(}\PY{n}{x}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{]}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}
+    \PY{k}{return} \PY{n}{der}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{res} \PY{o}{=} \PY{n}{minimize}\PY{p}{(}
+    \PY{n}{rosen}\PY{p}{,} \PY{n}{x0}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{BFGS}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{jac}\PY{o}{=}\PY{n}{rosen\PYZus{}der}\PY{p}{,}
+    \PY{n}{options}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{disp}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{k+kc}{True}\PY{p}{\PYZcb{}}
+\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{res}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Optimization terminated successfully.
+         Current function value: 0.000000
+         Iterations: 25
+         Function evaluations: 30
+         Gradient evaluations: 30
+  message: Optimization terminated successfully.
+  success: True
+   status: 0
+      fun: 4.0130879949972905e-13
+        x: [ 1.000e+00  1.000e+00  1.000e+00  1.000e+00  1.000e+00]
+      nit: 25
+      jac: [-5.690e-06 -2.733e-06 -2.545e-06 -7.735e-06  5.781e-06]
+ hess\_inv: [[ 7.588e-03  1.244e-02 {\ldots}  4.615e-02  9.222e-02]
+            [ 1.244e-02  2.482e-02 {\ldots}  9.299e-02  1.857e-01]
+            {\ldots}
+            [ 4.615e-02  9.299e-02 {\ldots}  3.738e-01  7.462e-01]
+            [ 9.222e-02  1.857e-01 {\ldots}  7.462e-01  1.494e+00]]
+     nfev: 30
+     njev: 30
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 最小值点}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{res}\PY{o}{.}\PY{n}{x}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[1.00000004 1.0000001  1.00000021 1.00000044 1.00000092]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 目标函数的黑塞矩阵}
+\PY{k}{def} \PY{n+nf}{rosen\PYZus{}hess}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+    \PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{asarray}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+    \PY{n}{H} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{diag}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{400}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{np}\PY{o}{.}\PY{n}{diag}\PY{p}{(}\PY{l+m+mi}{400}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}
+    \PY{n}{diagonal} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros\PYZus{}like}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+    \PY{n}{diagonal}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{1200}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{\PYZhy{}}\PY{l+m+mi}{400}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{+}\PY{l+m+mi}{2}
+    \PY{n}{diagonal}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{200}
+    \PY{n}{diagonal}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{202} \PY{o}{+} \PY{l+m+mi}{1200}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{\PYZhy{}} \PY{l+m+mi}{400}\PY{o}{*}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{:}\PY{p}{]}
+    \PY{n}{H} \PY{o}{=} \PY{n}{H} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{diag}\PY{p}{(}\PY{n}{diagonal}\PY{p}{)}
+    \PY{k}{return} \PY{n}{H}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{res} \PY{o}{=} \PY{n}{minimize}\PY{p}{(}
+    \PY{n}{rosen}\PY{p}{,} \PY{n}{x0}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Newton\PYZhy{}CG}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{jac}\PY{o}{=}\PY{n}{rosen\PYZus{}der}\PY{p}{,} \PY{n}{hess}\PY{o}{=}\PY{n}{rosen\PYZus{}hess}\PY{p}{,}
+    \PY{n}{options}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{xtol}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mf}{1e\PYZhy{}8}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{disp}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{k+kc}{True}\PY{p}{\PYZcb{}}
+\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{res}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Optimization terminated successfully.
+         Current function value: 0.000000
+         Iterations: 24
+         Function evaluations: 33
+         Gradient evaluations: 33
+         Hessian evaluations: 24
+ message: Optimization terminated successfully.
+ success: True
+  status: 0
+     fun: 3.5306674342205174e-17
+       x: [ 1.000e+00  1.000e+00  1.000e+00  1.000e+00  1.000e+00]
+     nit: 24
+     jac: [ 2.687e-08  9.267e-08  3.701e-07  1.485e-06 -8.526e-07]
+    nfev: 33
+    njev: 33
+    nhev: 24
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 最小值点}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{res}\PY{o}{.}\PY{n}{x}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[1.         1.         1.         0.99999999 0.99999999]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{res} \PY{o}{=} \PY{n}{minimize}\PY{p}{(}
+    \PY{n}{rosen}\PY{p}{,} \PY{n}{x0}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{trust\PYZhy{}ncg}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{jac}\PY{o}{=}\PY{n}{rosen\PYZus{}der}\PY{p}{,} \PY{n}{hess}\PY{o}{=}\PY{n}{rosen\PYZus{}hess}\PY{p}{,}
+    \PY{n}{options}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{gtol}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mf}{1e\PYZhy{}8}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{disp}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{k+kc}{True}\PY{p}{\PYZcb{}}
+\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{res}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Optimization terminated successfully.
+         Current function value: 0.000000
+         Iterations: 20
+         Function evaluations: 21
+         Gradient evaluations: 20
+         Hessian evaluations: 19
+ message: Optimization terminated successfully.
+ success: True
+  status: 0
+     fun: 1.232595164407831e-30
+       x: [ 1.000e+00  1.000e+00  1.000e+00  1.000e+00  1.000e+00]
+     nit: 20
+     jac: [-0.000e+00  0.000e+00  0.000e+00  4.441e-14 -2.220e-14]
+    nfev: 21
+    njev: 20
+    nhev: 19
+    hess: [[ 8.020e+02 -4.000e+02 {\ldots}  0.000e+00  0.000e+00]
+           [-4.000e+02  1.002e+03 {\ldots}  0.000e+00  0.000e+00]
+           {\ldots}
+           [ 0.000e+00  0.000e+00 {\ldots}  1.002e+03 -4.000e+02]
+           [ 0.000e+00  0.000e+00 {\ldots} -4.000e+02  2.000e+02]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 最小值点}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{res}\PY{o}{.}\PY{n}{x}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[1. 1. 1. 1. 1.]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{res} \PY{o}{=} \PY{n}{minimize}\PY{p}{(}
+    \PY{n}{rosen}\PY{p}{,} \PY{n}{x0}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{trust\PYZhy{}krylov}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{jac}\PY{o}{=}\PY{n}{rosen\PYZus{}der}\PY{p}{,} \PY{n}{hess}\PY{o}{=}\PY{n}{rosen\PYZus{}hess}\PY{p}{,}
+    \PY{n}{options}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{gtol}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mf}{1e\PYZhy{}8}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{disp}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{k+kc}{True}\PY{p}{\PYZcb{}}
+\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{res}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ iter inewton type    objective     âgââ\_Mâ»Â¹      leftmost         Î»
+Î³             Î´             Î±             Î²
+     0     0  cg\_i -6.273083e+02  4.029038e+02  0.000000e+00  0.000000e+00
+2.246107e+03  4.021147e+03  2.486853e-04  3.217671e-02
+
+ iter inewton type    objective     âgââ\_Mâ»Â¹      leftmost         Î»
+Î³             Î´             Î±             Î²
+     0     0  cg\_i -9.528585e+01  1.478412e+02  0.000000e+00  0.000000e+00
+6.001708e+02  1.890129e+03  5.290645e-04  6.067939e-02
+
+ iter inewton type    objective     âgââ\_Mâ»Â¹      leftmost         Î»
+Î³             Î´             Î±             Î²
+     0     0  cg\_i -8.662599e+00  5.824611e+01  0.000000e+00  0.000000e+00
+1.285783e+02  9.542387e+02  1.047956e-03  2.052100e-01
+
+ iter inewton type    objective     âgââ\_Mâ»Â¹      leftmost         Î»
+Î³             Î´             Î±             Î²
+     0     0  cg\_i -1.798598e+00  3.481545e+01  0.000000e+00  0.000000e+00
+5.168333e+01  7.425689e+02  1.346676e-03  4.537776e-01
+
+     1     0  cg\_i -2.721261e+00  1.426076e+01  0.000000e+00  0.000000e+00
+5.002168e+02  9.938183e+02  1.522401e-03  1.677804e-01
+
+ iter inewton type    objective     âgââ\_Mâ»Â¹      leftmost         Î»
+Î³             Î´             Î±             Î²
+     0     0  cg\_i -7.242386e-02  4.575385e+00  0.000000e+00  0.000000e+00
+1.400669e+01  1.354439e+03  7.383128e-04  1.067048e-01
+
+ iter inewton type    objective     âgââ\_Mâ»Â¹      leftmost         Î»
+Î³             Î´             Î±             Î²
+     0     0  cg\_i -8.331939e-03  2.017934e+00  0.000000e+00  0.000000e+00
+4.550681e+00  1.242730e+03  8.046802e-04  1.966351e-01
+
+ iter inewton type    objective     âgââ\_Mâ»Â¹      leftmost         Î»
+Î³             Î´             Î±             Î²
+     0     0  cg\_i -1.639774e-03  1.039910e+00  0.000000e+00  0.000000e+00
+2.017620e+00  1.241266e+03  8.056290e-04  2.656515e-01
+
+     1     0  cg\_i -2.362748e-03  4.063620e-01  0.000000e+00  0.000000e+00
+6.397659e+02  1.077635e+03  1.337094e-03  1.526986e-01
+
+ iter inewton type    objective     âgââ\_Mâ»Â¹      leftmost         Î»
+Î³             Î´             Î±             Î²
+     0     0  cg\_i -1.218928e-04  2.280362e-01  0.000000e+00  0.000000e+00
+4.066296e-01  6.782503e+02  1.474382e-03  3.144920e-01
+
+     1     0  cg\_i -1.746236e-04  3.200387e-01  0.000000e+00  0.000000e+00
+3.803600e+02  7.063791e+02  2.028090e-03  1.969687e+00
+
+     2     0  cg\_i -3.519759e-04  3.984883e-01  0.000000e+00  0.000000e+00
+6.920085e+02  1.259964e+03  3.463074e-03  1.550338e+00
+
+     3     0  cg\_i -5.758296e-03  3.569591e+00  0.000000e+00  0.000000e+00
+3.595435e+02  4.623626e+02  6.809270e-02  8.024274e+01
+
+ TR Solving trust region problem, radius 2.500000e-01; starting on first
+irreducible block
+ TR Coldstart. Seeking suitable initial Î»â, starting with 0
+ TR Starting Newton iteration for Î»â with initial choice 0.000000e+00
+ TR  iter        Î»            dÎ»       âhâ(Î»)â-radius
+ TR      1  2.943145e-01  2.943145e-01  3.059076e-07
+ TR      2  2.943152e-01  7.617834e-07 -1.912359e-14
+
+ iter inewton type    objective     Î³áµ¢ââ|háµ¢|      leftmost         Î»
+Î³             Î´
+     4     2   hot -2.875301e-02  0.000000e+00  0.000000e+00  2.943152e-01
+1.315535e+02  1.382362e+03
+
+Early exit as hotstart with early termination on
+
+ iter inewton type    objective     âgââ\_Mâ»Â¹      leftmost         Î»
+Î³             Î´             Î±             Î²
+     0     0  cg\_i -7.518233e-03  1.522235e+00  0.000000e+00  0.000000e+00
+4.090478e+00  1.112762e+03  8.986647e-04  1.384891e-01
+
+ iter inewton type    objective     âgââ\_Mâ»Â¹      leftmost         Î»
+Î³             Î´             Î±             Î²
+     0     0  cg\_i -1.096841e-03  8.409536e-01  0.000000e+00  0.000000e+00
+1.518407e+00  1.051001e+03  9.514742e-04  3.067379e-01
+
+     1     0  cg\_i -1.570721e-03  3.392978e-01  0.000000e+00  0.000000e+00
+5.820853e+02  1.068564e+03  1.340154e-03  1.627863e-01
+
+ iter inewton type    objective     âgââ\_Mâ»Â¹      leftmost         Î»
+Î³             Î´             Î±             Î²
+     0     0  cg\_i -6.479100e-05  1.641071e-01  0.000000e+00  0.000000e+00
+3.391135e-01  8.874534e+02  1.126820e-03  2.341879e-01
+
+     1     0  cg\_i -8.150449e-05  1.044376e-01  0.000000e+00  0.000000e+00
+4.294650e+02  1.013502e+03  1.241202e-03  4.050039e-01
+
+ iter inewton type    objective     âgââ\_Mâ»Â¹      leftmost         Î»
+Î³             Î´             Î±             Î²
+     0     0  cg\_i -6.864955e-06  9.214155e-02  0.000000e+00  0.000000e+00
+1.044215e-01  7.941673e+02  1.259181e-03  7.786304e-01
+
+     1     0  cg\_i -1.991674e-05  1.301343e-01  0.000000e+00  0.000000e+00
+7.007735e+02  9.436083e+02  3.074601e-03  1.994676e+00
+
+     2     0  cg\_i -1.195321e-04  3.179941e-01  0.000000e+00  0.000000e+00
+4.593539e+02  7.337610e+02  1.176448e-02  5.971103e+00
+
+     3     0  cg\_i -4.188868e-04  7.535566e-01  0.000000e+00  0.000000e+00
+2.077086e+02  6.764504e+02  5.920769e-03  5.615569e+00
+
+ iter inewton type    objective     âgââ\_Mâ»Â¹      leftmost         Î»
+Î³             Î´             Î±             Î²
+     0     0  cg\_i -8.816451e-04  5.184366e-01  0.000000e+00  0.000000e+00
+1.324450e+00  9.948272e+02  1.005200e-03  1.532216e-01
+
+ iter inewton type    objective     âgââ\_Mâ»Â¹      leftmost         Î»
+Î³             Î´             Î±             Î²
+     0     0  cg\_i -1.332921e-04  2.868284e-01  0.000000e+00  0.000000e+00
+5.178932e-01  1.006112e+03  9.939256e-04  3.067355e-01
+
+     1     0  cg\_i -1.931659e-04  1.227712e-01  0.000000e+00  0.000000e+00
+5.572219e+02  9.956424e+02  1.455536e-03  1.832097e-01
+
+ iter inewton type    objective     âgââ\_Mâ»Â¹      leftmost         Î»
+Î³             Î´             Î±             Î²
+     0     0  cg\_i -7.494787e-06  5.036955e-02  0.000000e+00  0.000000e+00
+1.227312e-01  1.004896e+03  9.951282e-04  1.684325e-01
+
+     1     0  cg\_i -9.038951e-06  2.464230e-02  0.000000e+00  0.000000e+00
+4.124145e+02  9.907665e+02  1.217272e-03  2.393460e-01
+
+     2     0  cg\_i -9.419876e-06  1.237374e-02  0.000000e+00  0.000000e+00
+4.019071e+02  9.936897e+02  1.254603e-03  2.521387e-01
+
+ iter inewton type    objective     âgââ\_Mâ»Â¹      leftmost         Î»
+Î³             Î´             Î±             Î²
+     0     0  cg\_i -8.123315e-08  6.017427e-03  0.000000e+00  0.000000e+00
+1.237352e-02  9.423732e+02  1.061151e-03  2.365023e-01
+
+     1     0  cg\_i -1.141577e-07  5.764425e-03  0.000000e+00  0.000000e+00
+4.582903e+02  7.727586e+02  1.818562e-03  9.176781e-01
+
+     2     0  cg\_i -1.714596e-07  9.206608e-03  0.000000e+00  0.000000e+00
+5.267653e+02  7.945608e+02  3.448951e-03  2.550864e+00
+
+     3     0  cg\_i -3.626456e-07  1.409674e-02  0.000000e+00  0.000000e+00
+4.630807e+02  9.612789e+02  4.511145e-03  2.344434e+00
+
+ iter inewton type    objective     âgââ\_Mâ»Â¹      leftmost         Î»
+Î³             Î´             Î±             Î²
+     0     0  cg\_i -7.032046e-09  1.474521e-03  0.000000e+00  0.000000e+00
+3.727647e-03  9.880023e+02  1.012143e-03  1.564705e-01
+
+     1     0  cg\_i -8.304899e-09  6.906989e-04  0.000000e+00  0.000000e+00
+3.908177e+02  1.008664e+03  1.170863e-03  2.194196e-01
+
+     2     0  cg\_i -8.600911e-09  3.514945e-04  0.000000e+00  0.000000e+00
+4.000658e+02  9.932200e+02  1.240972e-03  2.589760e-01
+
+     3     0  cg\_i -8.677805e-09  2.907239e-05  0.000000e+00  0.000000e+00
+4.100794e+02  1.012058e+03  1.244756e-03  6.841074e-03
+
+ iter inewton type    objective     âgââ\_Mâ»Â¹      leftmost         Î»
+Î³             Î´             Î±             Î²
+     0     0  cg\_i -1.065816e-17  7.061929e-08  0.000000e+00  0.000000e+00
+1.369755e-07  8.801844e+02  1.136126e-03  2.658036e-01
+
+     1     0  cg\_i -1.488030e-17  6.089564e-08  0.000000e+00  0.000000e+00
+4.537891e+02  8.245442e+02  1.693228e-03  7.435764e-01
+
+     2     0  cg\_i -2.014909e-17  8.298704e-08  0.000000e+00  0.000000e+00
+5.092692e+02  7.910571e+02  2.841638e-03  1.857155e+00
+
+     3     0  cg\_i -3.327619e-17  1.245258e-07  0.000000e+00  0.000000e+00
+4.795737e+02  9.158651e+02  3.812224e-03  2.251637e+00
+
+Optimization terminated successfully.
+         Current function value: 0.000000
+         Iterations: 19
+         Function evaluations: 20
+         Gradient evaluations: 20
+         Hessian evaluations: 18
+ message: Optimization terminated successfully.
+ success: True
+  status: 0
+     fun: 1.1618442019708214e-28
+       x: [ 1.000e+00  1.000e+00  1.000e+00  1.000e+00  1.000e+00]
+     nit: 19
+     jac: [ 4.396e-14  2.109e-14  6.417e-14  3.499e-13 -1.998e-13]
+    nfev: 20
+    njev: 20
+    nhev: 18
+    hess: [[ 8.020e+02 -4.000e+02 {\ldots}  0.000e+00  0.000e+00]
+           [-4.000e+02  1.002e+03 {\ldots}  0.000e+00  0.000e+00]
+           {\ldots}
+           [ 0.000e+00  0.000e+00 {\ldots}  1.002e+03 -4.000e+02]
+           [ 0.000e+00  0.000e+00 {\ldots} -4.000e+02  2.000e+02]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 最小值点}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{res}\PY{o}{.}\PY{n}{x}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[1. 1. 1. 1. 1.]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{res} \PY{o}{=} \PY{n}{minimize}\PY{p}{(}
+    \PY{n}{rosen}\PY{p}{,} \PY{n}{x0}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{trust\PYZhy{}exact}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{jac}\PY{o}{=}\PY{n}{rosen\PYZus{}der}\PY{p}{,} \PY{n}{hess}\PY{o}{=}\PY{n}{rosen\PYZus{}hess}\PY{p}{,}
+    \PY{n}{options}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{gtol}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+m+mf}{1e\PYZhy{}8}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{disp}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{k+kc}{True}\PY{p}{\PYZcb{}}
+\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{res}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Optimization terminated successfully.
+         Current function value: 0.000000
+         Iterations: 13
+         Function evaluations: 14
+         Gradient evaluations: 13
+         Hessian evaluations: 14
+ message: Optimization terminated successfully.
+ success: True
+  status: 0
+     fun: 1.534303144849083e-22
+       x: [ 1.000e+00  1.000e+00  1.000e+00  1.000e+00  1.000e+00]
+     nit: 13
+     jac: [ 7.503e-12  2.589e-11  1.048e-10  4.210e-10 -2.398e-10]
+    nfev: 14
+    njev: 13
+    nhev: 14
+    hess: [[ 8.020e+02 -4.000e+02 {\ldots}  0.000e+00  0.000e+00]
+           [-4.000e+02  1.002e+03 {\ldots}  0.000e+00  0.000e+00]
+           {\ldots}
+           [ 0.000e+00  0.000e+00 {\ldots}  1.002e+03 -4.000e+02]
+           [ 0.000e+00  0.000e+00 {\ldots} -4.000e+02  2.000e+02]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 最小值点}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{res}\PY{o}{.}\PY{n}{x}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[1. 1. 1. 1. 1.]
+    \end{Verbatim}

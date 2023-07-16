@@ -1,0 +1,116 @@
+    \hypertarget{ux5e26ux7ea6ux675fux7684ux6700ux5c0fux4e8cux4e58ux4f18ux5316ux95eeux9898}{%
+\subsubsection{带约束的最小二乘优化问题}\label{ux5e26ux7ea6ux675fux7684ux6700ux5c0fux4e8cux4e58ux4f18ux5316ux95eeux9898}}
+
+    这种问题在Python中计算的一般形式如下
+
+    \[
+\min\limits_{\textbf{x}}\dfrac{1}{2}\sum^n_{i=1}\rho(f_i(\textbf{x})^2)\\
+\text{subject to:}\\
+\textbf{lb}\le \textbf{x}\le \textbf{ub}
+\]
+
+    其中的\(f_i(\textbf{x})\)表示残差函数，一般是\(y_i-\hat{y}_i\)。
+
+    这里假设\(f_i(\textbf{x})\)的形式如下
+
+\[
+f_i(\textbf{x})=\dfrac{x_0(u^2_i+u_ix_1)}{u^2_i+u_ix_2+x_3}-y_i,\quad\quad i=1,2,\cdots,11
+\]
+
+    这里的\(x_1,x_2,x_3,x_0\)是要求解的参数，其中的\(u_i,y_i\)是已知的数据。
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{optimize} \PY{k+kn}{import} \PY{n}{least\PYZus{}squares}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 定义模型}
+\PY{k}{def} \PY{n+nf}{model}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{u}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{*} \PY{p}{(}\PY{n}{u} \PY{o}{*}\PY{o}{*} \PY{l+m+mi}{2} \PY{o}{+} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{*} \PY{n}{u}\PY{p}{)} \PY{o}{/} \PY{p}{(}\PY{n}{u} \PY{o}{*}\PY{o}{*} \PY{l+m+mi}{2} \PY{o}{+} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]} \PY{o}{*} \PY{n}{u} \PY{o}{+} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} 定义损失函数f\PYZus{}i(x)}
+\PY{k}{def} \PY{n+nf}{fun}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{u}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{model}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{u}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{y}
+\PY{c+c1}{\PYZsh{} 损失函数的雅可比矩阵}
+\PY{k}{def} \PY{n+nf}{jac}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{u}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{:}
+    \PY{n}{J} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{empty}\PY{p}{(}\PY{p}{(}\PY{n}{u}\PY{o}{.}\PY{n}{size}\PY{p}{,} \PY{n}{x}\PY{o}{.}\PY{n}{size}\PY{p}{)}\PY{p}{)}
+    \PY{n}{den} \PY{o}{=} \PY{n}{u} \PY{o}{*}\PY{o}{*} \PY{l+m+mi}{2} \PY{o}{+} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]} \PY{o}{*} \PY{n}{u} \PY{o}{+} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}
+    \PY{n}{num} \PY{o}{=} \PY{n}{u} \PY{o}{*}\PY{o}{*} \PY{l+m+mi}{2} \PY{o}{+} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{*} \PY{n}{u}
+    \PY{n}{J}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{n}{num} \PY{o}{/} \PY{n}{den}
+    \PY{n}{J}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{*} \PY{n}{u} \PY{o}{/} \PY{n}{den}
+    \PY{n}{J}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{]} \PY{o}{=} \PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{*} \PY{n}{num} \PY{o}{*} \PY{n}{u} \PY{o}{/} \PY{n}{den} \PY{o}{*}\PY{o}{*} \PY{l+m+mi}{2}
+    \PY{n}{J}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{]} \PY{o}{=} \PY{o}{\PYZhy{}}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{*} \PY{n}{num} \PY{o}{/} \PY{n}{den} \PY{o}{*}\PY{o}{*} \PY{l+m+mi}{2}
+    \PY{k}{return} \PY{n}{J}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 数据样本}
+\PY{n}{u} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}
+    \PY{p}{[}
+        \PY{l+m+mf}{4.0}\PY{p}{,} \PY{l+m+mf}{2.0}\PY{p}{,} \PY{l+m+mf}{1.0}\PY{p}{,} \PY{l+m+mf}{5.0e\PYZhy{}1}\PY{p}{,} \PY{l+m+mf}{2.5e\PYZhy{}1}\PY{p}{,} \PY{l+m+mf}{1.67e\PYZhy{}1}\PY{p}{,} \PY{l+m+mf}{1.25e\PYZhy{}1}\PY{p}{,} 
+        \PY{l+m+mf}{1.0e\PYZhy{}1}\PY{p}{,} \PY{l+m+mf}{8.33e\PYZhy{}2}\PY{p}{,} \PY{l+m+mf}{7.14e\PYZhy{}2}\PY{p}{,} \PY{l+m+mf}{6.25e\PYZhy{}2}
+    \PY{p}{]}
+\PY{p}{)}
+\PY{n}{y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}
+    \PY{p}{[}
+        \PY{l+m+mf}{1.957e\PYZhy{}1}\PY{p}{,} \PY{l+m+mf}{1.947e\PYZhy{}1}\PY{p}{,} \PY{l+m+mf}{1.735e\PYZhy{}1}\PY{p}{,} \PY{l+m+mf}{1.6e\PYZhy{}1}\PY{p}{,} \PY{l+m+mf}{8.44e\PYZhy{}2}\PY{p}{,} \PY{l+m+mf}{6.27e\PYZhy{}2}\PY{p}{,}
+        \PY{l+m+mf}{4.56e\PYZhy{}2}\PY{p}{,} \PY{l+m+mf}{3.42e\PYZhy{}2}\PY{p}{,} \PY{l+m+mf}{3.23e\PYZhy{}2}\PY{p}{,} \PY{l+m+mf}{2.35e\PYZhy{}2}\PY{p}{,} \PY{l+m+mf}{2.46e\PYZhy{}2}
+    \PY{p}{]}
+\PY{p}{)}
+\PY{c+c1}{\PYZsh{} 初始值}
+\PY{n}{x0} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{2.5}\PY{p}{,} \PY{l+m+mf}{3.9}\PY{p}{,} \PY{l+m+mf}{4.15}\PY{p}{,} \PY{l+m+mf}{3.9}\PY{p}{]}\PY{p}{)}
+\PY{n}{res} \PY{o}{=} \PY{n}{least\PYZus{}squares}\PY{p}{(}
+    \PY{n}{fun}\PY{p}{,} \PY{c+c1}{\PYZsh{} 损失函数 f\PYZus{}i(x)}
+    \PY{n}{x0}\PY{p}{,} \PY{c+c1}{\PYZsh{} 初始值}
+    \PY{n}{jac}\PY{o}{=}\PY{n}{jac}\PY{p}{,} \PY{c+c1}{\PYZsh{} 雅可比矩阵}
+    \PY{n}{bounds}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{)}\PY{p}{,} \PY{c+c1}{\PYZsh{} 变量范围}
+    \PY{n}{args}\PY{o}{=}\PY{p}{(}\PY{n}{u}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{,} \PY{c+c1}{\PYZsh{} fun中的参数}
+    \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{1}
+\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{res}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+`ftol` termination condition is satisfied.
+Function evaluations 131, initial cost 4.4383e+00, final cost 1.5375e-04, first-
+order optimality 4.52e-08.
+     message: `ftol` termination condition is satisfied.
+     success: True
+      status: 2
+         fun: [-1.307e-03 -1.876e-03  8.920e-03 -1.111e-02  8.352e-03
+               -1.737e-04  2.584e-05  1.263e-03 -3.524e-03  6.168e-04
+               -3.889e-03]
+           x: [ 1.928e-01  1.913e-01  1.231e-01  1.361e-01]
+        cost: 0.00015375280234150847
+         jac: [[ 1.008e+00  4.638e-02 -4.676e-02 -1.169e-02]
+               [ 1.000e+00  8.800e-02 -8.800e-02 -4.400e-02]
+               {\ldots}
+               [ 1.251e-01  9.180e-02 -1.148e-02 -1.608e-01]
+               [ 1.074e-01  8.160e-02 -8.766e-03 -1.403e-01]]
+        grad: [-4.526e-10 -1.445e-10  1.552e-09  8.542e-08]
+  optimality: 4.516919346939224e-08
+ active\_mask: [0 0 0 0]
+        nfev: 131
+        njev: 104
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 最优点}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{res}\PY{o}{.}\PY{n}{x}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[0.192806   0.19130332 0.12306046 0.13607205]
+    \end{Verbatim}
